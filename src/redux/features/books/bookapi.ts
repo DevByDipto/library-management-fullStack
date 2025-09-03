@@ -27,8 +27,14 @@ export const bookApi = createApi({
         { type: 'Book', id },
         'Book',
       ],
+    }),
+    deleteBook:build.mutation({
+      query: (id) => ({
+        url: `books/${id}`,
+        method: 'DELETE',
+      }),
     })
   })
 });
 
-export const { useGetBookQuery, useGetBookByIdQuery, useUpdateBookMutation } = bookApi;
+export const { useGetBookQuery, useGetBookByIdQuery, useUpdateBookMutation,useDeleteBookMutation } = bookApi;

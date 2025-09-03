@@ -1,20 +1,51 @@
 import React from "react";
-import { useGetBookQuery } from "../redux/features/books/bookapi";
+import {
+  useDeleteBookMutation,
+  useGetBookQuery,
+} from "../redux/features/books/bookapi";
 import Loading from "../components/Loading";
 import { Button } from "../components/ui/button";
 import type { Book } from "../type";
 import { Link } from "react-router";
+import Swal from "sweetalert2";
 
 const AllBook = () => {
   const { data, isLoading } = useGetBookQuery(undefined);
-
+  const [deleteBook] = useDeleteBookMutation();
   if (isLoading) {
     return <Loading></Loading>;
   }
 
   const books = data.data;
   // console.log(data);
-
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await deleteBook(id).unwrap(); // unwrap ki kaj kore ??
+          console.log(res);
+          if (res.success) {
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "Book is successfully delete",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        } catch (error) {
+          console.error("Failed to delete book", error);
+        }
+      }
+    });
+  };
   return (
     <div className="p-6">
       {/* Add New Book Button */}
@@ -37,35 +68,43 @@ const AllBook = () => {
             </tr>
           </thead>
           <tbody>
-            {books.map((book:Book) => ( // book use korate lav kii holo
-              <tr key={book._id} className="border-b dark:border-gray-700">
-                <td className="py-2 px-4">{book.title}</td>
-                <td className="py-2 px-4">{book.author}</td>
-                <td className="py-2 px-4">{book.genre}</td>
-                <td className="py-2 px-4">{book.isbn}</td>
-                <td className="py-2 px-4 text-center">{book.copies}</td>
-                <td className="py-2 px-4 text-center">
-                  {book.available ? "Available" : "Unavailable"}
-                </td>
-                <td className="py-2 px-4 text-center space-x-2">
-                 <Link to={`edit-book/${book._id}`}>
-                  <Button size="sm" variant="outline">
-                    Edit Book
-                  </Button>
-                 </Link>
-                  <Button size="sm" variant="destructive">
-                    Delete Book
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={!book.available}
-                  >
-                    Borrow Book
-                  </Button>
-                </td>
-              </tr>
-            ))}
+            {books.map(
+              (
+                book: Book // book use korate lav kii holo
+              ) => (
+                <tr key={book._id} className="border-b dark:border-gray-700">
+                  <td className="py-2 px-4">{book.title}</td>
+                  <td className="py-2 px-4">{book.author}</td>
+                  <td className="py-2 px-4">{book.genre}</td>
+                  <td className="py-2 px-4">{book.isbn}</td>
+                  <td className="py-2 px-4 text-center">{book.copies}</td>
+                  <td className="py-2 px-4 text-center">
+                    {book.available ? "Available" : "Unavailable"}
+                  </td>
+                  <td className="py-2 px-4 text-center space-x-2">
+                    <Link to={`edit-book/${book._id}`}>
+                      <Button size="sm" variant="outline">
+                        Edit Book
+                      </Button>
+                    </Link>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => handleDelete(book._id)}
+                    >
+                      Delete Book
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={!book.available}
+                    >
+                      Borrow Book
+                    </Button>
+                  </td>
+                </tr>
+              )
+            )}
           </tbody>
         </table>
       </div>
