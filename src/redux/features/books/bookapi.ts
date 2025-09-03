@@ -1,14 +1,14 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 
 export const bookApi = createApi({
      reducerPath: "bookApi",
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:5000/api',
   }),
-   tagTypes: ['book'],
+//    tagTypes: ['book'],
    endpoints: (build) => ({
        getBook: build.query({
-        query: () => ({ url: `/books` }),
+        query: () => `/books`,
        })
 
    })
