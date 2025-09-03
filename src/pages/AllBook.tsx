@@ -3,6 +3,7 @@ import { useGetBookQuery } from "../redux/features/books/bookapi";
 import Loading from "../components/Loading";
 import { Button } from "../components/ui/button";
 import type { Book } from "../type";
+import { Link } from "react-router";
 
 const AllBook = () => {
   const { data, isLoading } = useGetBookQuery(undefined);
@@ -12,7 +13,7 @@ const AllBook = () => {
   }
 
   const books = data.data;
-  console.log(data);
+  // console.log(data);
 
   return (
     <div className="p-6">
@@ -47,9 +48,11 @@ const AllBook = () => {
                   {book.available ? "Available" : "Unavailable"}
                 </td>
                 <td className="py-2 px-4 text-center space-x-2">
+                 <Link to={`edit-book/${book._id}`}>
                   <Button size="sm" variant="outline">
                     Edit Book
                   </Button>
+                 </Link>
                   <Button size="sm" variant="destructive">
                     Delete Book
                   </Button>
