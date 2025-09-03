@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import counterReducer from "./features/counter/counterSlice"
 import { bookApi } from './features/books/bookapi'
+import { borrowApi } from './features/borrow/borrowApi'
 export const store = configureStore({
   reducer: {
-    [bookApi.reducerPath]: bookApi.reducer
+    [bookApi.reducerPath]: bookApi.reducer,
+    [borrowApi.reducerPath]: borrowApi.reducer
   },
    middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(bookApi.middleware),
+    getDefaultMiddleware().concat(bookApi.middleware).concat(borrowApi.middleware),
 })
 
 export type RootState = ReturnType<typeof store.getState>

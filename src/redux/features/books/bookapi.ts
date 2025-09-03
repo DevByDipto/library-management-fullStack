@@ -16,6 +16,14 @@ export const bookApi = createApi({
       // একটি নির্দিষ্ট বইয়ের জন্য ট্যাগ, যা আইডির উপর নির্ভরশীল।
       providesTags: (result, error, id) => [{ type: 'Book', id }], // result, error kii ? kothatheke asche ? id kotha theke asche ?
     }),
+    createBook: build.mutation({
+      query: (body) => ({
+        url: `books`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Book']
+    }),
     updateBook: build.mutation({
       query: ({ id, ...patch }) => ({
         url: `books/${id}`,
@@ -28,13 +36,15 @@ export const bookApi = createApi({
         'Book',
       ],
     }),
-    deleteBook:build.mutation({
+    deleteBook: build.mutation({
       query: (id) => ({
         url: `books/${id}`,
         method: 'DELETE',
       }),
-    })
+      invalidatesTags: ['Book']
+    }),
+
   })
 });
 
-export const { useGetBookQuery, useGetBookByIdQuery, useUpdateBookMutation,useDeleteBookMutation } = bookApi;
+export const { useGetBookQuery, useGetBookByIdQuery, useUpdateBookMutation, useDeleteBookMutation,useCreateBookMutation } = bookApi;

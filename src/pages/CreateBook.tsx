@@ -27,11 +27,13 @@ import {
 } from "../components/ui/select";
 import { Button } from "../components/ui/button";
 import {
+    useCreateBookMutation,
   useGetBookByIdQuery,
   useUpdateBookMutation,
 } from "../redux/features/books/bookapi";
 import { useNavigate, useParams } from "react-router";
 import Loading from "../components/Loading";
+import Swal from "sweetalert2";
 
 // Book data type
 type BookFormData = {
@@ -49,66 +51,42 @@ const genres = [
   'FICTION', 'NON_FICTION', 'SCIENCE', 'HISTORY', 'BIOGRAPHY', 'FANTASY'
 ];
 
-const EditBook = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const { data, isLoading } = useGetBookByIdQuery(id);
-  const book = data?.data;
-  // console.log("book title", book?.title);
-  const form = useForm<BookFormData>({
-    defaultValues: {
-      // defaultValues nah dile kii hoto
-      title: book?.title || "",
-      author: book?.author || "",
-      genre: book?.genre || "",
-      isbn: book?.isbn || "",
-      description: book?.description || "",
-      copies: book?.copies || "",
-      available: book?.available || "",
-    },
-  });
-
-  useEffect(() => {
-    if (book) {
-      form.reset({
-        title: book.title,
-        author: book.author,
-        genre: book.genre,
-        isbn: book.isbn,
-        description: book.description,
-        copies: book.copies,
-        available: book.available,
-      });
-    }
-  }, [book, form]);
+const CreateBook = () => {
+const navigate = useNavigate();
+  const form = useForm<BookFormData>();
 
   // console.log(book);
 
-  const [updateBook, result] = useUpdateBookMutation();
+  const [updateBook, {isLoading: isUpdating}] = useCreateBookMutation();
 
-  if (isLoading) {
-    return <Loading></Loading>;
-  }
 
   const onSubmit = async (data: BookFormData) => {
-    // console.log("Form Data:", data);
+    console.log("Form Data:", data);
+    const bookData= {
+        ...data,
+        available:true
+    }
     try {
-     const res =  await updateBook({id,...data}).unwrap();
-     console.log(res);
-     if(res.success == true){
-
-       navigate("/");
-     }
-     
+      const res = await updateBook(bookData);
+      console.log(res);
+      if (res.data.success) {
+        Swal.fire({
+  position: "top-end",
+  icon: "success",
+  title: "Book has been created successfully",
+  showConfirmButton: false,
+  timer: 1500
+});
+        navigate("/");
+      }
     } catch (error) {
       console.log(error);
     }
 
-    alert("Book information has been successfully submitted!");
 
     // You can make API call here
   };
-  const copiesValue = form.watch("copies");
+
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-6">
       <Card>
@@ -283,37 +261,7 @@ const EditBook = () => {
                 )}
               />
 
-              {/* Available Switch */}
-              <FormField
-                control={form.control}
-                name="available"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-base">Available</FormLabel>
-                      <div className="text-sm text-muted-foreground">
-                        Whether this book is currently available
-                      </div>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={copiesValue > 0 ? field.value : false} // field.value  kii ?
-                        // onCheckedChange={field.onChange}
-                        onCheckedChange={(newCheckedValue) => {
-                          if (newCheckedValue && copiesValue <= 0) {
-                            alert(
-                              "want to available true you should trune your copis value upon 0"
-                            );
-                          } else {
-                            field.onChange(newCheckedValue);
-                          } // aikhane newCheckedValue ta kii ?
-                        }}
-                        // disabled={copiesValue <= 0}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+             
 
               {/* Submit Button */}
               <div className="flex justify-end space-x-2">
@@ -324,7 +272,7 @@ const EditBook = () => {
                   onClick={form.handleSubmit(onSubmit)}
                   className="bg-blue-600 hover:bg-blue-700"
                 >
-                  Update Book
+                  Create Book
                 </Button>
               </div>
             </div>
@@ -335,4 +283,4 @@ const EditBook = () => {
   );
 };
 
-export default EditBook;
+export default CreateBook;

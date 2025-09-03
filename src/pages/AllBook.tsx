@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  useCreateBookMutation,
   useDeleteBookMutation,
   useGetBookQuery,
 } from "../redux/features/books/bookapi";
@@ -9,9 +10,62 @@ import type { Book } from "../type";
 import { Link } from "react-router";
 import Swal from "sweetalert2";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
+} from "../components/ui/dialog";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import { useState } from "react";
+import { useCreateborrowMutation } from "../redux/features/borrow/borrowApi";
+import toast from "react-hot-toast";
+
 const AllBook = () => {
-  const { data, isLoading } = useGetBookQuery(undefined);
+  const { data, isLoading,refetch,isError } = useGetBookQuery(undefined);
   const [deleteBook] = useDeleteBookMutation();
+  const [quantity, setQuantity] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [createborrow] = useCreateborrowMutation();
+if(isError){
+  console.log(isError,data);
+  
+}
+
+  const handleSubmit = async (id, e) => {
+    e.preventDefault();
+    const borrowData = {
+      book: id,
+      quantity: Number(quantity),
+      dueDate,
+    };
+    try {
+      const res = await createborrow(borrowData);
+      console.log(res);
+      if (res?.data?.success) {
+        refetch()
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Book borrowed successfully",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+      if(res?.error){
+        toast.error(res.error.data.error)
+      }
+    } catch (error) {
+      toast.error(error.message)
+      console.log(error);
+    }
+  };
+
   if (isLoading) {
     return <Loading></Loading>;
   }
@@ -47,10 +101,14 @@ const AllBook = () => {
     });
   };
   return (
-    <div className="p-6">
-      {/* Add New Book Button */}
-      <div className="flex justify-end mb-4">
-        <Button variant="default">Add New Book</Button>
+    <div className="px-8 my-10">
+      <div>
+ {/* Add New Book Button */}
+      <div className="flex justify-between mb-4">
+      <h2 className="text-2xl font-bold">All Books</h2>
+        <Link to="create-book">
+          <Button variant="default">Add New Book</Button>
+        </Link>
       </div>
 
       {/* Books Table */}
@@ -84,7 +142,7 @@ const AllBook = () => {
                   <td className="py-2 px-4 text-center space-x-2">
                     <Link to={`edit-book/${book._id}`}>
                       <Button size="sm" variant="outline">
-                        Edit Book
+                        Edit 
                       </Button>
                     </Link>
                     <Button
@@ -92,15 +150,64 @@ const AllBook = () => {
                       variant="destructive"
                       onClick={() => handleDelete(book._id)}
                     >
-                      Delete Book
+                      Delete 
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      disabled={!book.available}
-                    >
-                      Borrow Book
-                    </Button>
+                    {/* borrow book */}
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={!book.available}
+                        >
+                          Borrow 
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Borrow Details</DialogTitle>
+                          <DialogDescription>
+                            Please enter the quantity and due date.
+                          </DialogDescription>
+                        </DialogHeader>
+
+                        <form
+                          onSubmit={(e) => handleSubmit(book._id, e)}
+                          className="space-y-4"
+                        >
+                          {/* Quantity Field */}
+                          <div className="flex flex-col gap-2">
+                            <Label htmlFor="quantity">Quantity</Label>
+                            <Input
+                              id="quantity"
+                              type="number"
+                              placeholder="Enter quantity"
+                              value={quantity}
+                              onChange={(e) => setQuantity(e.target.value)}
+                              required
+                            />
+                          </div>
+
+                          {/* Due Date Field */}
+                          <div className="flex flex-col gap-2">
+                            <Label htmlFor="dueDate">Due Date</Label>
+                            <Input
+                              id="dueDate"
+                              type="date"
+                              value={dueDate}
+                              onChange={(e) => setDueDate(e.target.value)}
+                              required
+                            />
+                          </div>
+
+                          <DialogFooter>
+                            <DialogClose asChild>
+                            <Button type="submit">Save</Button>
+                            </DialogClose>
+                          </DialogFooter>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
                   </td>
                 </tr>
               )
@@ -108,6 +215,8 @@ const AllBook = () => {
           </tbody>
         </table>
       </div>
+      </div>
+     
     </div>
   );
 };
