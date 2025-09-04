@@ -24,10 +24,7 @@ import {
   SelectValue,
 } from "../components/ui/select";
 import { Button } from "../components/ui/button";
-import {
-    useCreateBookMutation,
-  
-} from "../redux/features/books/bookapi";
+import { useCreateBookMutation } from "../redux/features/books/bookApi";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
@@ -45,42 +42,49 @@ type BookFormData = {
 
 // Genre options
 const genres = [
-  'FICTION', 'NON_FICTION', 'SCIENCE', 'HISTORY', 'BIOGRAPHY', 'FANTASY'
+  "FICTION",
+  "NON_FICTION",
+  "SCIENCE",
+  "HISTORY",
+  "BIOGRAPHY",
+  "FANTASY",
 ];
 
 const CreateBook = () => {
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const form = useForm<BookFormData>();
 
   // console.log(book);
 
   const [createBook] = useCreateBookMutation();
 
-
   const onSubmit = async (data: BookFormData) => {
     // console.log("Form Data:", data);
-    const bookData= {
-        ...data,
-        available:true
-    }
+    const bookData = {
+      ...data,
+      available: true,
+    };
     try {
       const res = await createBook(bookData).unwrap();
       console.log(res);
       if (res.data.success) {
         Swal.fire({
-  position: "top-end",
-  icon: "success",
-  title: "Book has been created successfully",
-  showConfirmButton: false,
-  timer: 1500
-});
+          position: "top-end",
+          icon: "success",
+          title: "Book has been created successfully",
+          showConfirmButton: false,
+          timer: 1500,
+        });
         navigate("/");
       }
     } catch (error) {
-      toast.error(error.data.message)
-      console.log(error);
-    }
-
+  if (error && typeof error === "object" && "data" in error) {
+    const err = error as { data: { message: string } }
+    toast.error(err.data.message)
+  } else {
+    toast.error("Something went wrong")
+  }
+}
 
     // You can make API call here
   };
@@ -251,15 +255,13 @@ const navigate = useNavigate();
                         onChange={(e) =>
                           field.onChange(parseInt(e.target.value) || 0)
                         }
-                        // onChange keno use hoise ? field.onChange kii ? aii field er value 0 keno set kora jacche nah ?
+                        //  aii field er value 0 keno set kora jacche nah ?
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-
-             
 
               {/* Submit Button */}
               <div className="flex justify-end space-x-2">

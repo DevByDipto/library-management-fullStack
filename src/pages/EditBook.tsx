@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import  { useEffect } from "react";
 import { useForm, type ControllerRenderProps } from "react-hook-form";
 // import { Button } from '../components/ui/button';
 import {
@@ -29,7 +29,7 @@ import { Button } from "../components/ui/button";
 import {
   useGetBookByIdQuery,
   useUpdateBookMutation,
-} from "../redux/features/books/bookapi";
+} from "../redux/features/books/bookApi";
 import { useNavigate, useParams } from "react-router";
 import Loading from "../components/Loading";
 import toast from "react-hot-toast";
@@ -110,9 +110,13 @@ const EditBook = () => {
      }
      
     } catch (error) {
-      toast.error(error.data.message)
-      // console.log(error);
-    }
+  if (error && typeof error === "object" && "data" in error) {
+    const err = error as { data: { message: string } }
+    toast.error(err.data.message)
+  } else {
+    toast.error("Something went wrong")
+  }
+}
 
 
     // You can make API call here
@@ -306,19 +310,16 @@ const EditBook = () => {
                     </div>
                     <FormControl>
                       <Switch
-                        checked={copiesValue > 0 ? field.value : false} // field.value  kii ?
-                        // onCheckedChange={field.onChange}
+                        checked={copiesValue > 0 ? field.value : false}
+                   
                         onCheckedChange={(newCheckedValue) => {
                           if (newCheckedValue && copiesValue <= 0) {
-                            alert(
-                              "want to available true you should trune your copis value upon 0"
-                            );
+                            toast.error('want to available true you should trune your copis value upon 0')
                           } else {
                             field.onChange(newCheckedValue);
-                          } // aikhane newCheckedValue ta kii ?
+                          } // aikhane newCheckedValue ta kii ? kotha theke ase aita ?
                         }}
-                        // disabled={copiesValue <= 0}
-                      />
+                                          />
                     </FormControl>
                   </FormItem>
                 )}

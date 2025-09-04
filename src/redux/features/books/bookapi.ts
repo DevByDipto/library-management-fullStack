@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 export const bookApi = createApi({
   reducerPath: "bookApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api',
+    baseUrl: `${import.meta.env.VITE_API_URL}/api`,
   }),
   tagTypes: ['Book'],
   endpoints: (build) => ({
@@ -14,7 +14,7 @@ export const bookApi = createApi({
     getBookById: build.query({
       query: (id) => `/books/${id}`,
       // একটি নির্দিষ্ট বইয়ের জন্য ট্যাগ, যা আইডির উপর নির্ভরশীল।
-      providesTags: (result, error, id) => [{ type: 'Book', id }], // result, error kii ? kothatheke asche ? id kotha theke asche ?
+      providesTags: (id) => [{ type: 'Book', id }], // result, error kii ? kothatheke asche ? id kotha theke asche ?
     }),
     createBook: build.mutation({
       query: (body) => ({
@@ -30,8 +30,7 @@ export const bookApi = createApi({
         method: 'PATCH',
         body: patch,
       }),
-      // এখন এটি দুটি ট্যাগই বাতিল করবে: নির্দিষ্ট বই এবং সম্পূর্ণ তালিকা।
-      invalidatesTags: (result, error, { id }) => [ // {id} aivabe likhlam keno ?
+      invalidatesTags: ({ id }) => [ // {id} aivabe likhlam keno shorashori id nah likhe ?
         { type: 'Book', id },
         'Book',
       ],

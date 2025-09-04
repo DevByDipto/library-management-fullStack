@@ -9,7 +9,7 @@ const BorrowSummary = () => {
     return <Loading></Loading>;
   }
 
-  const borrows = data?.data;
+  const borrows:Borrow[]  = data?.data;
   if(!borrows)return
   // console.log(data);
 
@@ -35,7 +35,7 @@ const BorrowSummary = () => {
           <tbody>
             {borrows?.map(
               (
-                borrow: Borrow // book use korate lav kii holo
+                borrow: Borrow 
               ) => (
                 <tr key={borrow.book.isbn} className="border-b dark:border-gray-700">
                   <td className="py-2 px-4">{borrow.book.title}</td>

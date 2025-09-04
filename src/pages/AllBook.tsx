@@ -1,9 +1,8 @@
 import React from "react";
 import {
-  useCreateBookMutation,
   useDeleteBookMutation,
   useGetBookQuery,
-} from "../redux/features/books/bookapi";
+} from "../redux/features/books/bookApi";
 import Loading from "../components/Loading";
 import { Button } from "../components/ui/button";
 import type { Book } from "../type";
@@ -58,10 +57,14 @@ const AllBook = () => {
       // if(res?.error){
       //   toast.error(res.error.data.error)
       // }
-    } catch (error) {
-      toast.error(error.data.error)
-      // console.log(error);
-    }
+    }catch (error) {
+  if (error && typeof error === "object" && "data" in error) {
+    const err = error as { data: { error: string } }
+    toast.error(err.data.error)
+  } else {
+    toast.error("Something went wrong")
+  }
+}
   };
 
   if (isLoading) {
@@ -70,7 +73,7 @@ const AllBook = () => {
 
   const books = data?.data;
   if(!books){
-    return 
+    return <p className="text-center text-red-600">Sorry,Something went wrong. No data found.</p>
   }
   // console.log(data);
   const handleDelete = (id:string) => {
@@ -96,9 +99,14 @@ const AllBook = () => {
             });
           }
         } catch (error) {
-          toast.error(error.data.message)
-          // console.error("Failed to delete book", error);
-        }
+  if (error && typeof error === "object" && "data" in error) {
+    const err = error as { data: { message: string } }
+    toast.error(err.data.message)
+  } else {
+    toast.error("Something went wrong")
+  }
+}
+        
       }
     });
   };
@@ -130,7 +138,7 @@ const AllBook = () => {
           <tbody>
             {books?.map(
               (
-                book: Book // book use korate lav kii holo
+                book: Book 
               ) => (
                 <tr key={book._id} className="border-b dark:border-gray-700">
                   <td className="py-2 px-4">{book.title}</td>
