@@ -67,7 +67,7 @@ const CreateBook = () => {
     try {
       const res = await createBook(bookData).unwrap();
       console.log(res);
-      if (res.data.success) {
+      if (res?.success) {
         Swal.fire({
           position: "top-end",
           icon: "success",

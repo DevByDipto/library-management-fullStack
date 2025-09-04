@@ -17,10 +17,11 @@ const Banner = () => {
           Your personal space to manage and explore books efficiently
         </p>
         {/* Button */}
-        <Link to='/all-book'>
+        <Link to='/books'>
         <Button>
           All Books
         </Button>
+        
         </Link>
         
       </div>

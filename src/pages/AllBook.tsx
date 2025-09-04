@@ -150,6 +150,11 @@ const AllBook = () => {
                     {book.available ? "Available" : "Unavailable"}
                   </td>
                   <td className="py-2 px-4 text-center space-x-2">
+                     <Link to={`books/${book._id}`}>
+                      <Button size="sm" variant="outline">
+                        Details 
+                      </Button>
+                    </Link>
                     <Link to={`edit-book/${book._id}`}>
                       <Button size="sm" variant="outline">
                         Edit 

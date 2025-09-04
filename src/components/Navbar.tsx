@@ -18,8 +18,8 @@ const Navbar = () => {
           {/* Desktop Links */}
           <div className="hidden md:flex space-x-4">
             <Link to="/">Home</Link>
-            <Link to="/all-book">All Books</Link>
-            <Link to="/add-book">Add Book</Link>
+            <Link to="/books">All Books</Link>
+            <Link to="/create-book">Add Book</Link>
             <Link to="/borrow-summary">Borrow Summary</Link>
           </div>
 
