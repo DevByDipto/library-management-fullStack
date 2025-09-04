@@ -33,6 +33,7 @@ import {
 import { useNavigate, useParams } from "react-router";
 import Loading from "../components/Loading";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
 // Book data type
 type BookFormData = {
@@ -85,7 +86,7 @@ const EditBook = () => {
 
   // console.log(book);
 
-  const [updateBook, result] = useUpdateBookMutation();
+  const [updateBook] = useUpdateBookMutation();
 
   if (isLoading) {
     return <Loading></Loading>;

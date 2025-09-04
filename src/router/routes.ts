@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router";
-import App from '../App'
-import mainLayout from "../layouts/mainLayout";
+import MainLayout from "../layouts/MainLayout";
 import Home from "../pages/Home";
 import EditBook from "../pages/EditBook";
 import CreateBook from "../pages/CreateBook";
@@ -9,7 +8,7 @@ import BorrowSummary from "../pages/BorrowSummary";
 export const router = createBrowserRouter([
   {
     path: "/",
-    Component: mainLayout,
+    Component: MainLayout,
     children:[
         {
             index:true,

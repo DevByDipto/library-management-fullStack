@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { useForm, type ControllerRenderProps } from "react-hook-form";
 // import { Button } from '../components/ui/button';
 import {
@@ -11,7 +10,6 @@ import {
 } from "../components/ui/form";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
-import { Switch } from "../components/ui/switch";
 import {
   Card,
   CardContent,
@@ -28,11 +26,9 @@ import {
 import { Button } from "../components/ui/button";
 import {
     useCreateBookMutation,
-  useGetBookByIdQuery,
-  useUpdateBookMutation,
+  
 } from "../redux/features/books/bookapi";
-import { useNavigate, useParams } from "react-router";
-import Loading from "../components/Loading";
+import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
 
@@ -58,7 +54,7 @@ const navigate = useNavigate();
 
   // console.log(book);
 
-  const [createBook, {isLoading: isUpdating}] = useCreateBookMutation();
+  const [createBook] = useCreateBookMutation();
 
 
   const onSubmit = async (data: BookFormData) => {

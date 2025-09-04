@@ -1,5 +1,6 @@
 import Loading from "../components/Loading";
 import { useGetborrowQuery } from "../redux/features/borrow/borrowApi";
+import type { Borrow } from "../type";
 
 
 const BorrowSummary = () => {
@@ -34,7 +35,7 @@ const BorrowSummary = () => {
           <tbody>
             {borrows?.map(
               (
-                borrow // book use korate lav kii holo
+                borrow: Borrow // book use korate lav kii holo
               ) => (
                 <tr key={borrow.book.isbn} className="border-b dark:border-gray-700">
                   <td className="py-2 px-4">{borrow.book.title}</td>

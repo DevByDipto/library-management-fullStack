@@ -34,7 +34,8 @@ const AllBook = () => {
   const [createborrow] = useCreateborrowMutation();
 
 
-  const handleSubmit = async (id, e) => {
+  const handleSubmit = async ( id: string, 
+  e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const borrowData = {
       book: id,
@@ -72,7 +73,7 @@ const AllBook = () => {
     return 
   }
   // console.log(data);
-  const handleDelete = (id) => {
+  const handleDelete = (id:string) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
