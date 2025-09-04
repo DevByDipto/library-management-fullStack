@@ -34,6 +34,7 @@ import {
 import { useNavigate, useParams } from "react-router";
 import Loading from "../components/Loading";
 import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 // Book data type
 type BookFormData = {
@@ -57,17 +58,17 @@ const navigate = useNavigate();
 
   // console.log(book);
 
-  const [updateBook, {isLoading: isUpdating}] = useCreateBookMutation();
+  const [createBook, {isLoading: isUpdating}] = useCreateBookMutation();
 
 
   const onSubmit = async (data: BookFormData) => {
-    console.log("Form Data:", data);
+    // console.log("Form Data:", data);
     const bookData= {
         ...data,
         available:true
     }
     try {
-      const res = await updateBook(bookData);
+      const res = await createBook(bookData).unwrap();
       console.log(res);
       if (res.data.success) {
         Swal.fire({
@@ -80,6 +81,7 @@ const navigate = useNavigate();
         navigate("/");
       }
     } catch (error) {
+      toast.error(error.data.message)
       console.log(error);
     }
 
@@ -92,7 +94,7 @@ const navigate = useNavigate();
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">
-            Edit Book
+            Create Book
           </CardTitle>
         </CardHeader>
         <CardContent>

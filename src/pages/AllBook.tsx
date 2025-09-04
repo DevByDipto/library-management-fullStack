@@ -27,15 +27,12 @@ import { useCreateborrowMutation } from "../redux/features/borrow/borrowApi";
 import toast from "react-hot-toast";
 
 const AllBook = () => {
-  const { data, isLoading,refetch,isError } = useGetBookQuery(undefined);
+  const { data, isLoading,refetch } = useGetBookQuery(undefined);
   const [deleteBook] = useDeleteBookMutation();
   const [quantity, setQuantity] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [createborrow] = useCreateborrowMutation();
-if(isError){
-  console.log(isError,data);
-  
-}
+
 
   const handleSubmit = async (id, e) => {
     e.preventDefault();
@@ -45,8 +42,8 @@ if(isError){
       dueDate,
     };
     try {
-      const res = await createborrow(borrowData);
-      console.log(res);
+      const res = await createborrow(borrowData).unwrap();
+      // console.log(res);
       if (res?.data?.success) {
         refetch()
         Swal.fire({
@@ -57,12 +54,12 @@ if(isError){
           timer: 1500,
         });
       }
-      if(res?.error){
-        toast.error(res.error.data.error)
-      }
+      // if(res?.error){
+      //   toast.error(res.error.data.error)
+      // }
     } catch (error) {
-      toast.error(error.message)
-      console.log(error);
+      toast.error(error.data.error)
+      // console.log(error);
     }
   };
 
@@ -70,7 +67,10 @@ if(isError){
     return <Loading></Loading>;
   }
 
-  const books = data.data;
+  const books = data?.data;
+  if(!books){
+    return 
+  }
   // console.log(data);
   const handleDelete = (id) => {
     Swal.fire({
@@ -95,7 +95,8 @@ if(isError){
             });
           }
         } catch (error) {
-          console.error("Failed to delete book", error);
+          toast.error(error.data.message)
+          // console.error("Failed to delete book", error);
         }
       }
     });
@@ -126,7 +127,7 @@ if(isError){
             </tr>
           </thead>
           <tbody>
-            {books.map(
+            {books?.map(
               (
                 book: Book // book use korate lav kii holo
               ) => (

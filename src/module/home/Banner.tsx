@@ -1,6 +1,7 @@
 import React from 'react'
 import bannerImage from '../../../public/pexels-pixabay-261821.jpg'
 import { Button } from '@/components/ui/button' // যদি shadcn/ui button use করতে চাও
+import { Link } from 'react-router'
 
 const Banner = () => {
   return (
@@ -15,11 +16,13 @@ const Banner = () => {
         <p className="text-lg md:text-2xl mb-6">
           Your personal space to manage and explore books efficiently
         </p>
-
         {/* Button */}
+        <Link to='/all-book'>
         <Button>
           All Books
         </Button>
+        </Link>
+        
       </div>
     </div>
   )

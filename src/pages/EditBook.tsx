@@ -32,6 +32,7 @@ import {
 } from "../redux/features/books/bookapi";
 import { useNavigate, useParams } from "react-router";
 import Loading from "../components/Loading";
+import toast from "react-hot-toast";
 
 // Book data type
 type BookFormData = {
@@ -95,16 +96,23 @@ const EditBook = () => {
     try {
      const res =  await updateBook({id,...data}).unwrap();
      console.log(res);
-     if(res.success == true){
+     if(res.success){
+        Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Book information has been successfully submitted!",
+        showConfirmButton: false,
+        timer: 1500
+      });
 
        navigate("/");
      }
      
     } catch (error) {
-      console.log(error);
+      toast.error(error.data.message)
+      // console.log(error);
     }
 
-    alert("Book information has been successfully submitted!");
 
     // You can make API call here
   };
