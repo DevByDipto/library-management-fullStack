@@ -8,7 +8,7 @@ A clean and minimal **Library Management System** built with React, Redux Toolki
 
 - **Client-side:** [Library Management Client](https://library-management-client-psi-sage.vercel.app)  
 - **Server-side:** [Library Management Server](https://library-management-pearl-two.vercel.app)  
-
+- **Server-side-repo:** [Library Management Server repo](https://github.com/DevByDipto/library-management)  
 ---
 
 ## 📝 Project Overview
